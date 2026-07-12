@@ -2,7 +2,7 @@
 #define AEGISHOME_ALARMMANAGER_H
 
 #include <Arduino.h>
-#include "SystemStateManager.h"
+#include "Enums.h"
 #include "Utilities.h"
 
 // Owns buzzer pattern generation + red LED during ALARM state.

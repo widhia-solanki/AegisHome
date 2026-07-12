@@ -10,9 +10,9 @@
 //
 // Today this only prints to Serial when Config::DEBUG_LOG_ENABLED is
 // true. The macro layer exists so a future MQTT/network logging
-// backend can be swapped in behind Logger::write() without touching
-// any call site — every module calls LOG_INFO/LOG_WARN/LOG_ERROR
-// instead of Serial.println() directly.
+// backend (see NetworkManager) can be swapped in behind Logger::write()
+// without touching any call site — every module calls
+// LOG_INFO/LOG_WARN/LOG_ERROR instead of Serial.println() directly.
 //
 // Output format: [LEVEL][TAG] message
 // e.g. [INFO][BOOT] Initializing OLED
@@ -21,36 +21,9 @@
 
 namespace Logger {
 
-inline const char* severityLabel(Severity level) {
-  switch (level) {
-    case Severity::INFO:    return "INFO";
-    case Severity::WARNING: return "WARNING";
-    case Severity::ERROR:   return "ERROR";
-    case Severity::FATAL:   return "FATAL";
-    default:                return "UNKNOWN";
-  }
-}
-
-inline void begin() {
-  if (Config::DEBUG_LOG_ENABLED) {
-    Serial.begin(Config::SERIAL_BAUD_RATE);
-    // Give the USB-serial bridge a moment to enumerate before the first
-    // log line, so the earliest boot messages aren't lost on some boards.
-    delay(50);
-  }
-}
-
-inline void write(Severity level, const char* tag, const char* message) {
-  if (!Config::DEBUG_LOG_ENABLED) {
-    return;
-  }
-  Serial.print('[');
-  Serial.print(severityLabel(level));
-  Serial.print("][");
-  Serial.print(tag);
-  Serial.print("] ");
-  Serial.println(message);
-}
+const char* severityLabel(Severity level);
+void begin();
+void write(Severity level, const char* tag, const char* message);
 
 } // namespace Logger
 

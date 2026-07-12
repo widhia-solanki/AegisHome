@@ -2,16 +2,12 @@
 #define AEGISHOME_SYSTEMSTATEMANAGER_H
 
 #include <Arduino.h>
-
-enum class SystemState {
-  BOOT,
-  NORMAL,
-  SECURITY_ARMED,
-  ALARM
-};
+#include "Enums.h"
 
 // Sole owner of the FSM. No other module may mutate state directly —
-// all transitions go through requestTransition().
+// all transitions go through requestTransition(). SystemState itself
+// now lives in Enums.h so this header doesn't need to be included just
+// to reach the enum (see Enums.h header comment).
 class SystemStateManager {
 public:
   void begin();

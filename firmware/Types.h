@@ -2,8 +2,7 @@
 #define AEGISHOME_TYPES_H
 
 #include <Arduino.h>
-#include "config.h"
-#include "SystemStateManager.h"
+#include "Enums.h"
 
 // ---------------------------------------------------------------------
 // SensorSnapshot — one consistent view of all sensor/input state for a
