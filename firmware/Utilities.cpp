@@ -33,8 +33,49 @@ bool Debouncer::justReleased() const {
 // ---------------------------------------------------------------------
 // MovingAverage
 // ---------------------------------------------------------------------
-MovingAverage::MovingAverage(uint8_t windowSize) {
-  // TODO: implement
+
+MovingAverage::MovingAverage(uint8_t windowSize)
+    : windowSize_(min(windowSize, MAX_WINDOW)),
+      index_(0),
+      count_(0),
+      sum_(0.0f)
+{
+    for (uint8_t i = 0; i < MAX_WINDOW; i++)
+    {
+        buffer_[i] = 0.0f;
+    }
+}
+
+void MovingAverage::addSample(float value)
+{
+    if (count_ < windowSize_)
+    {
+        buffer_[index_] = value;
+        sum_ += value;
+
+        index_ = (index_ + 1) % windowSize_;
+        count_++;
+    }
+    else
+    {
+        sum_ -= buffer_[index_];
+
+        buffer_[index_] = value;
+
+        sum_ += value;
+
+        index_ = (index_ + 1) % windowSize_;
+    }
+}
+
+float MovingAverage::getAverage() const
+{
+    if (count_ == 0)
+    {
+        return 0.0f;
+    }
+
+    return sum_ / count_;
 }
 
 void MovingAverage::addSample(float value) {
@@ -72,7 +113,6 @@ bool Timer::isDue()
 void Timer::reset()
 {
     lastTriggerMs_ = millis();
-}
 }
 
 bool Timer::isDue() {
