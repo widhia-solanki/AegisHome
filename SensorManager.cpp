@@ -19,6 +19,29 @@ void SensorManager::begin()
     irHealthy_ = true;
 }
 
+bool SensorManager::readDarkState()
+{
+    // LM393 module:
+    // LOW = Dark
+    // HIGH = Bright
+    return digitalRead(Config::PIN_LDR_DIGITAL) == LOW;
+}
+
+bool SensorManager::readMotionState()
+{
+    return digitalRead(Config::PIN_IR_MOTION) == HIGH;
+}
+
+float SensorManager::readTemperatureC()
+{
+    return 0.0f;
+}
+
+bool SensorManager::checkSensorHealth()
+{
+    return true;
+}
+
 void SensorManager::update() {
   // TODO: implement — poll analog/digital inputs on their own intervals,
   // update filters/debouncers, compute edge-triggered events, and write

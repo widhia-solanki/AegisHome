@@ -33,6 +33,11 @@ private:
 
     // Shared snapshot published once per update()
     SensorSnapshot snapshot_;
+
+    float readTemperatureC();
+    bool readDarkState();
+    bool readMotionState();
+    bool checkSensorHealth();
 };
 
 #endif // AEGISHOME_SENSORMANAGER_H
