@@ -30,23 +30,54 @@ void Debouncer::begin(uint8_t pin, bool usePullup)
     lastChangeMs_ = millis();
 }
 
-void Debouncer::update() {
-  // TODO: implement
+void Debouncer::update()
+{
+    justPressedFlag_ = false;
+    justReleasedFlag_ = false;
+
+    bool rawState = digitalRead(pin_);
+
+    if (rawState != lastRawState_)
+    {
+        lastRawState_ = rawState;
+        lastChangeMs_ = millis();
+    }
+
+    if ((millis() - lastChangeMs_) >= debounceDelayMs)
+    {
+        if (lastStableState_ != lastRawState_)
+        {
+            lastStableState_ = lastRawState_;
+
+            if (lastStableState_)
+            {
+                justPressedFlag_ = true;
+            }
+            else
+            {
+                justReleasedFlag_ = true;
+            }
+        }
+    }
 }
 
-bool Debouncer::isHigh() const {
-  // TODO: implement
-  return false;
+bool Debouncer::isHigh() const
+{
+    return lastStableState_;
 }
 
-bool Debouncer::justPressed() {
-  // TODO: implement
-  return false;
+bool Debouncer::justPressed()
+{
+    bool event = justPressedFlag_;
+    justPressedFlag_ = false;
+    return event;
 }
 
-bool Debouncer::justReleased() {
-  // TODO: implement
-  return false;
+bool Debouncer::justReleased()
+{
+    bool event = justReleasedFlag_;
+    justReleasedFlag_ = false;
+    return event;
 }
 
 // ---------------------------------------------------------------------
