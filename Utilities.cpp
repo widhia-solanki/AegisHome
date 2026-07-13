@@ -3,12 +3,31 @@
 // ---------------------------------------------------------------------
 // Debouncer
 // ---------------------------------------------------------------------
-Debouncer::Debouncer() {
-  // TODO: implement
+Debouncer::Debouncer()
+    : pin_(0),
+      usePullup_(false),
+      lastStableState_(false),
+      lastRawState_(false),
+      justPressedFlag_(false),
+      justReleasedFlag_(false),
+      lastChangeMs_(0)
+{
 }
 
-void Debouncer::begin(uint8_t pin, bool usePullup) {
-  // TODO: implement
+void Debouncer::begin(uint8_t pin, bool usePullup)
+{
+    pin_ = pin;
+    usePullup_ = usePullup;
+
+    pinMode(pin_, usePullup_ ? INPUT_PULLUP : INPUT);
+
+    lastStableState_ = digitalRead(pin_);
+    lastRawState_ = lastStableState_;
+
+    justPressedFlag_ = false;
+    justReleasedFlag_ = false;
+
+    lastChangeMs_ = millis();
 }
 
 void Debouncer::update() {
@@ -20,12 +39,12 @@ bool Debouncer::isHigh() const {
   return false;
 }
 
-bool Debouncer::justPressed() const {
+bool Debouncer::justPressed() {
   // TODO: implement
   return false;
 }
 
-bool Debouncer::justReleased() const {
+bool Debouncer::justReleased() {
   // TODO: implement
   return false;
 }
@@ -78,15 +97,6 @@ float MovingAverage::getAverage() const
     return sum_ / count_;
 }
 
-void MovingAverage::addSample(float value) {
-  // TODO: implement
-}
-
-float MovingAverage::getAverage() const {
-  // TODO: implement
-  return 0.0f;
-}
-
 // ---------------------------------------------------------------------
 // Timer
 // ---------------------------------------------------------------------
@@ -113,13 +123,4 @@ bool Timer::isDue()
 void Timer::reset()
 {
     lastTriggerMs_ = millis();
-}
-
-bool Timer::isDue() {
-  // TODO: implement
-  return false;
-}
-
-void Timer::reset() {
-  // TODO: implement
 }

@@ -10,8 +10,8 @@ public:
   void begin(uint8_t pin, bool usePullup);
   void update();
   bool isHigh() const;
-  bool justPressed() const;   // rising edge, debounced
-  bool justReleased() const;  // falling edge, debounced
+  bool justPressed();
+  bool justReleased();
 
 private:
   uint8_t pin_;
