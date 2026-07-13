@@ -14,7 +14,18 @@ public:
   bool justReleased() const;  // falling edge, debounced
 
 private:
-  // TODO: implement — pin, lastStableState, lastRawState, lastChangeMs
+  uint8_t pin_;
+  bool usePullup_;
+
+  bool lastStableState_;
+  bool lastRawState_;
+
+  bool justPressedFlag_;
+  bool justReleasedFlag_;
+
+  uint32_t lastChangeMs_;
+
+  static constexpr uint32_t debounceDelayMs = 40;
 };
 
 // Simple moving-average filter for noisy analog readings.
@@ -25,7 +36,17 @@ public:
   float getAverage() const;
 
 private:
-  // TODO: implement — circular buffer, windowSize, sum
+  static constexpr uint8_t MAX_WINDOW = 20;
+
+  float buffer_[MAX_WINDOW];
+
+  uint8_t windowSize_;
+
+  uint8_t index_;
+
+  uint8_t count_;
+
+  float sum_;
 };
 
 // Non-blocking interval timer.
@@ -36,7 +57,9 @@ public:
   void reset();
 
 private:
-  // TODO: implement — intervalMs, lastTriggerMs
+  uint32_t intervalMs_;
+
+  uint32_t lastTriggerMs_;
 };
 
 // NOTE (postponed — not v1): an EdgeDetector utility (wraps a raw boolean

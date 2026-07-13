@@ -49,8 +49,30 @@ float MovingAverage::getAverage() const {
 // ---------------------------------------------------------------------
 // Timer
 // ---------------------------------------------------------------------
-Timer::Timer(uint32_t intervalMs) {
-  // TODO: implement
+
+Timer::Timer(uint32_t intervalMs)
+    : intervalMs_(intervalMs),
+      lastTriggerMs_(millis())
+{
+}
+
+bool Timer::isDue()
+{
+    uint32_t now = millis();
+
+    if (now - lastTriggerMs_ >= intervalMs_)
+    {
+        lastTriggerMs_ = now;
+        return true;
+    }
+
+    return false;
+}
+
+void Timer::reset()
+{
+    lastTriggerMs_ = millis();
+}
 }
 
 bool Timer::isDue() {
