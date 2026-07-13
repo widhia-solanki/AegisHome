@@ -19,9 +19,20 @@ public:
   const SensorSnapshot& getSnapshot() const;
 
 private:
-  // TODO: implement — MovingAverage tempFilter, Debouncer instances for
-  // IR/buttons, fault flags, and the SensorSnapshot instance itself
-  SensorSnapshot snapshot_;
+    // Filters
+    MovingAverage tempFilter_{10};
+
+    // Debounced digital inputs
+    Debouncer armButton_;
+    Debouncer doorbellButton_;
+
+    // Sensor health flags
+    bool thermistorHealthy_;
+    bool ldrHealthy_;
+    bool irHealthy_;
+
+    // Shared snapshot published once per update()
+    SensorSnapshot snapshot_;
 };
 
 #endif // AEGISHOME_SENSORMANAGER_H
