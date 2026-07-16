@@ -36,7 +36,7 @@ void DisplayManager::update(const SystemStatus& status) {
   // doorOpen, error) — no direct reference to any feature controller
 }
 
-ErrorCode DisplayManager::getOledFault() const {
-  // TODO: implement
-  return ErrorCode::NONE;
+ErrorCode DisplayManager::getOledFault() const
+{
+    return oledFault_;
 }
