@@ -34,6 +34,14 @@ bool SensorManager::readMotionState()
 
 float SensorManager::readTemperatureC()
 {
+    int adc = analogRead(Config::PIN_THERMISTOR);
+
+    // TODO:
+    // Convert ADC reading to resistance.
+    // Convert resistance to temperature.
+    // Filter using tempFilter_.
+    // Return filtered temperature.
+
     return 0.0f;
 }
 
