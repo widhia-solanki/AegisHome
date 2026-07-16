@@ -11,7 +11,22 @@ void AlarmManager::begin()
     patternStep_ = 0;
 }
 
-void AlarmManager::update(SystemState currentState) {
-  // TODO: implement — if currentState == SystemState::ALARM, step the
-  // non-blocking buzzer/LED pattern; otherwise ensure both are off
+void AlarmManager::update(SystemState currentState)
+{
+    if (currentState != SystemState::ALARM)
+    {
+        digitalWrite(Config::PIN_BUZZER, LOW);
+        digitalWrite(Config::PIN_LED_INDICATOR, LOW);
+
+        patternStep_ = 0;
+        return;
+    }
+
+    if (!patternTimer_.isDue())
+        return;
+
+    patternStep_ ^= 1;
+
+    digitalWrite(Config::PIN_BUZZER, patternStep_);
+    digitalWrite(Config::PIN_LED_INDICATOR, patternStep_);
 }
