@@ -9,11 +9,29 @@ void DoorController::begin()
     isOpen_ = false;
 
     servoFault_ = ErrorCode::NONE;
+
+    doorTimer_.reset();
 }
 
-void DoorController::update(const SensorSnapshot& snapshot) {
-  // TODO: implement — on snapshot.doorbellPressed, open + flash welcome
-  // LED, start dwell timer; on dwell timer expiry, return to closed
+void DoorController::update(const SensorSnapshot& snapshot)
+{
+    // Doorbell pressed -> open door
+    if (snapshot.doorbellPressed)
+    {
+        doorServo_.write(Config::SERVO_ANGLE_OPEN);
+
+        isOpen_ = true;
+
+        doorTimer_.reset();
+    }
+
+    // Auto-close after dwell time
+    if (isOpen_ && doorTimer_.isDue())
+    {
+        doorServo_.write(Config::SERVO_ANGLE_CLOSED);
+
+        isOpen_ = false;
+    }
 }
 
 bool DoorController::isOpen() const
