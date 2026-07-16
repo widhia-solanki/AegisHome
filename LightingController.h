@@ -2,6 +2,7 @@
 #define AEGISHOME_LIGHTINGCONTROLLER_H
 
 #include <Arduino.h>
+#include "config.h"
 #include "Types.h"
 
 // Drives lighting LED based on LDR comparator state. Does not know
@@ -15,7 +16,7 @@ public:
   bool isLightingOn() const;
 
 private:
-  // TODO: implement — lightingOn_ bool
+    bool lightingOn_;
 };
 
 #endif // AEGISHOME_LIGHTINGCONTROLLER_H
