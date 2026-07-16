@@ -46,35 +46,76 @@ SecurityManager securityManager;
 AlarmManager alarmManager;
 DisplayManager displayManager;
 
-void setup() {
-  LOGGER_BEGIN();
-  LOG_INFO("BOOT", "AegisHome starting");
+void setup()
+{
+    LOGGER_BEGIN();
 
-  // TODO: implement boot sequence per FDS §11b —
-  // 1. Utilities is a header-only/inline dependency, no begin() of its
-  //    own — it's "first" in the sense that SensorManager needs it
-  //    working correctly before SensorManager itself is implemented
-  // 2. displayManager.begin() + power-up animation
-  // 3. Remaining module begin() calls
-  // 4. Run boot diagnostic checklist (thermistor/LDR/IR/servo/OLED),
-  //    calling displayManager.renderBootStep() for each; LOG_ERROR any
-  //    failures before continuing
-  // 5. displayManager.renderReady()
-  // 6. stateManager transitions BOOT -> NORMAL
+    LOG_INFO("BOOT", "AegisHome starting");
+
+    displayManager.begin();
+    sensors.begin();
+    stateManager.begin();
+    temperatureController.begin();
+    lightingController.begin();
+    doorController.begin();
+    securityManager.begin();
+    alarmManager.begin();
+
+    displayManager.renderBootStep("OLED", displayManager.getOledFault() == ErrorCode::NONE);
+    delay(Config::BOOT_DIAGNOSTIC_STEP_MS);
+
+    displayManager.renderBootStep("Servo", doorController.getServoFault() == ErrorCode::NONE);
+    delay(Config::BOOT_DIAGNOSTIC_STEP_MS);
+
+    displayManager.renderBootStep("Thermistor", true);
+    delay(Config::BOOT_DIAGNOSTIC_STEP_MS);
+
+    displayManager.renderBootStep("LDR", true);
+    delay(Config::BOOT_DIAGNOSTIC_STEP_MS);
+
+    displayManager.renderBootStep("IR", true);
+    delay(Config::BOOT_DIAGNOSTIC_STEP_MS);
+
+    displayManager.renderReady();
+
+    stateManager.requestTransition(SystemState::NORMAL);
+
+    LOG_INFO("BOOT", "Initialization complete");
 }
 
-void loop() {
-  // TODO: implement per FDS §7 (Task Scheduling Strategy) —
-  // 1. sensors.update() — refreshes the single SensorSnapshot for this cycle
-  // 2. const SensorSnapshot& snapshot = sensors.getSnapshot();
-  // 3. Feed `snapshot` into temperatureController.update(), 
-  //    lightingController.update(), doorController.update(),
-  //    securityManager.update(snapshot, stateManager) — every controller
-  //    reads the SAME snapshot instance, so nothing observes a
-  //    mid-cycle-changed value relative to another controller
-  // 4. alarmManager.update(stateManager.current())
-  // 5. Build a SystemStatus from the controllers' current output
-  //    (isFanActive(), isLightingOn(), isOpen(), isArmed(), etc.) and
-  //    pass ONE SystemStatus instance into displayManager.update()
-  // No delay() calls anywhere in this function.
+void loop()
+{
+    sensors.update();
+
+    const SensorSnapshot& snapshot = sensors.getSnapshot();
+
+    temperatureController.update(snapshot);
+    lightingController.update(snapshot);
+    doorController.update(snapshot);
+    securityManager.update(snapshot, stateManager);
+
+    alarmManager.update(stateManager.current());
+
+    SystemStatus status;
+
+    status.state = stateManager.current();
+    status.fanActive = temperatureController.isFanActive();
+    status.lightingOn = lightingController.isLightingOn();
+    status.alarmActive = (stateManager.current() == SystemState::ALARM);
+    status.doorOpen = doorController.isOpen();
+
+    if (snapshot.thermistorFault != ErrorCode::NONE)
+        status.error = snapshot.thermistorFault;
+    else if (snapshot.ldrFault != ErrorCode::NONE)
+        status.error = snapshot.ldrFault;
+    else if (snapshot.irFault != ErrorCode::NONE)
+        status.error = snapshot.irFault;
+    else if (doorController.getServoFault() != ErrorCode::NONE)
+        status.error = doorController.getServoFault();
+    else if (displayManager.getOledFault() != ErrorCode::NONE)
+        status.error = displayManager.getOledFault();
+    else
+        status.error = ErrorCode::NONE;
+
+    displayManager.update(status);
 }
