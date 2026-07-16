@@ -17,7 +17,8 @@ public:
   bool lastArmRequestRejected() const;
 
 private:
-  // TODO: implement — armed_ bool, armRejected_ bool
+    bool armed_;
+    bool armRejected_;
 };
 
 #endif // AEGISHOME_SECURITYMANAGER_H
