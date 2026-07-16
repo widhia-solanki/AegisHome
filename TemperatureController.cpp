@@ -1,7 +1,12 @@
 #include "TemperatureController.h"
 
-void TemperatureController::begin() {
-  // TODO: implement — pinMode for fan LED, init timer
+void TemperatureController::begin()
+{
+    pinMode(Config::PIN_LED_INDICATOR, OUTPUT);
+
+    digitalWrite(Config::PIN_LED_INDICATOR, LOW);
+
+    fanActive_ = false;
 }
 
 void TemperatureController::update(const SensorSnapshot& snapshot) {
@@ -11,7 +16,7 @@ void TemperatureController::update(const SensorSnapshot& snapshot) {
   // snapshot.thermistorFault != ErrorCode::NONE (fan disabled, per FDS §11d).
 }
 
-bool TemperatureController::isFanActive() const {
-  // TODO: implement
-  return false;
+bool TemperatureController::isFanActive() const
+{
+    return fanActive_;
 }
