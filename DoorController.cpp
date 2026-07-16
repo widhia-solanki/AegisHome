@@ -16,12 +16,12 @@ void DoorController::update(const SensorSnapshot& snapshot) {
   // LED, start dwell timer; on dwell timer expiry, return to closed
 }
 
-bool DoorController::isOpen() const {
-  // TODO: implement
-  return false;
+bool DoorController::isOpen() const
+{
+    return isOpen_;
 }
 
-ErrorCode DoorController::getServoFault() const {
-  // TODO: implement
-  return ErrorCode::NONE;
+ErrorCode DoorController::getServoFault() const
+{
+    return servoFault_;
 }
