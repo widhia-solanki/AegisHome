@@ -2,22 +2,20 @@
 
 void DisplayManager::begin()
 {
-    Wire.begin(
-        Config::PIN_OLED_SDA,
-        Config::PIN_OLED_SCL
-    );
+    Wire.begin(Config::PIN_OLED_SDA, Config::PIN_OLED_SCL);
 
     if (!display_.begin(
             SSD1306_SWITCHCAPVCC,
             Config::OLED_I2C_ADDRESS))
     {
         oledFault_ = ErrorCode::E04_OLED_FAULT;
+
         return;
     }
 
     display_.clearDisplay();
-    display_.setTextColor(SSD1306_WHITE);
     display_.setTextSize(1);
+    display_.setTextColor(SSD1306_WHITE);
     display_.display();
 }
 
@@ -25,6 +23,9 @@ void DisplayManager::renderBootStep(
     const char* label,
     bool ok)
 {
+    if (oledFault_ != ErrorCode::NONE)
+        return;
+
     display_.clearDisplay();
 
     display_.setCursor(0,0);
@@ -33,21 +34,25 @@ void DisplayManager::renderBootStep(
 
     display_.print(" : ");
 
-    display_.println(
-        ok ? "OK" : "FAIL"
-    );
+    display_.println(ok ? "OK" : "FAIL");
 
     display_.display();
+
 }
 
 void DisplayManager::renderReady()
 {
+    if (oledFault_ != ErrorCode::NONE)
+        return;
+
     display_.clearDisplay();
 
     display_.setCursor(0,0);
+
     display_.println("AegisHome");
 
-    display_.println();
+    display_.println("----------------");
+
     display_.println("System Ready");
 
     display_.display();
