@@ -2,6 +2,7 @@
 #define AEGISHOME_ALARMMANAGER_H
 
 #include <Arduino.h>
+#include "config.h"
 #include "Enums.h"
 #include "Utilities.h"
 
@@ -13,7 +14,9 @@ public:
   void update(SystemState currentState);
 
 private:
-  // TODO: implement — Timer for pattern stepping, pattern step index
-};
+    Timer patternTimer_{Config::ALARM_PATTERN_STEP_MS};
+
+    uint8_t patternStep_;
+  };
 
 #endif // AEGISHOME_ALARMMANAGER_H

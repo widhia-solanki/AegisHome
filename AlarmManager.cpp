@@ -1,7 +1,14 @@
 #include "AlarmManager.h"
 
-void AlarmManager::begin() {
-  // TODO: implement — pinMode for buzzer/red LED, init pattern timer
+void AlarmManager::begin()
+{
+    pinMode(Config::PIN_BUZZER, OUTPUT);
+    pinMode(Config::PIN_LED_INDICATOR, OUTPUT);
+
+    digitalWrite(Config::PIN_BUZZER, LOW);
+    digitalWrite(Config::PIN_LED_INDICATOR, LOW);
+
+    patternStep_ = 0;
 }
 
 void AlarmManager::update(SystemState currentState) {
