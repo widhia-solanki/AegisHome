@@ -5,6 +5,7 @@
 #include "config.h"
 #include "Types.h"
 #include "Utilities.h"
+#include <Servo.h>
 
 // Owns servo motion + welcome LED sequence. Non-blocking timed return.
 // Does not read the security button. Reads from a SensorSnapshot.
@@ -17,8 +18,13 @@ public:
   ErrorCode getServoFault() const;
 
 private:
-  // TODO: implement — servo object/wrapper, Timer for dwell time,
-  // isOpen_ bool, fault flag, boot-time confirmatory sweep result
-};
+    Servo doorServo_;
+
+    Timer doorTimer_{Config::DOOR_DWELL_TIME_MS};
+
+    bool isOpen_;
+
+    ErrorCode servoFault_;
+  };
 
 #endif // AEGISHOME_DOORCONTROLLER_H

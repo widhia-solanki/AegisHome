@@ -1,8 +1,14 @@
 #include "DoorController.h"
 
-void DoorController::begin() {
-  // TODO: implement — attach servo, move to Config::SERVO_ANGLE_CLOSED,
-  // run boot-time confirmatory sweep (0 -> 10 -> 0) per FDS §11b
+void DoorController::begin()
+{
+    doorServo_.attach(Config::PIN_SERVO_DOOR);
+
+    doorServo_.write(Config::SERVO_ANGLE_CLOSED);
+
+    isOpen_ = false;
+
+    servoFault_ = ErrorCode::NONE;
 }
 
 void DoorController::update(const SensorSnapshot& snapshot) {
