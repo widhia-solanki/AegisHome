@@ -60,13 +60,15 @@ void DisplayManager::renderReady()
 
 void DisplayManager::update(const SystemStatus& status)
 {
-    display_.clearDisplay();
+    if (oledFault_ != ErrorCode::NONE)
+        return;
 
-    display_.setCursor(0,0);
+    display_.clearDisplay();
+    display_.setCursor(0, 0);
 
     display_.print("State: ");
 
-    switch(status.state)
+    switch (status.state)
     {
         case SystemState::BOOT:
             display_.println("BOOT");
@@ -85,11 +87,14 @@ void DisplayManager::update(const SystemStatus& status)
             break;
     }
 
-    display_.print("Fan: ");
+    display_.print("Fan : ");
     display_.println(status.fanActive ? "ON" : "OFF");
 
     display_.print("Light: ");
     display_.println(status.lightingOn ? "ON" : "OFF");
+
+    display_.print("Door: ");
+    display_.println(status.doorOpen ? "OPEN" : "CLOSED");
 
     display_.print("Door: ");
     display_.println(status.doorOpen ? "OPEN" : "CLOSED");
