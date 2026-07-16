@@ -15,9 +15,9 @@ public:
 
   // Returns false if the transition is invalid for the current state.
   bool requestTransition(SystemState next);
-
+  
 private:
-  // TODO: implement — SystemState state_, transition validity table
+    SystemState state_;
 };
 
 #endif // AEGISHOME_SYSTEMSTATEMANAGER_H
