@@ -7,7 +7,16 @@ void LightingController::begin()
 
 void LightingController::update(const SensorSnapshot& snapshot)
 {
-    lightingOn_ = true;
+    // Fail-safe:
+    // If the LDR has failed, keep the light ON.
+    if (snapshot.ldrFault != ErrorCode::NONE)
+    {
+        lightingOn_ = true;
+        return;
+    }
+
+    // Otherwise follow the LDR state.
+    lightingOn_ = snapshot.dark;
 }
 
 bool LightingController::isLightingOn() const
