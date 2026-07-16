@@ -1,4 +1,5 @@
 #include "SensorManager.h"
+#include <math.h>
 
 void SensorManager::begin()
 {
@@ -34,15 +35,37 @@ bool SensorManager::readMotionState()
 
 float SensorManager::readTemperatureC()
 {
+    constexpr float SERIES_RESISTOR = 10000.0f;
+    constexpr float NOMINAL_RESISTANCE = 10000.0f;
+    constexpr float NOMINAL_TEMPERATURE = 25.0f;
+    constexpr float BETA = 3950.0f;
+
     int adc = analogRead(Config::PIN_THERMISTOR);
 
-    // TODO:
-    // Convert ADC reading to resistance.
-    // Convert resistance to temperature.
-    // Filter using tempFilter_.
-    // Return filtered temperature.
+    if (adc <= 0)
+    {
+        thermistorHealthy_ = false;
+        return 0.0f;
+    }
 
-    return 0.0f;
+    thermistorHealthy_ = true;
+
+    float resistance =
+        SERIES_RESISTOR *
+        ((1023.0f / adc) - 1.0f);
+
+    float steinhart;
+
+    steinhart = resistance / NOMINAL_RESISTANCE;
+    steinhart = log(steinhart);
+    steinhart /= BETA;
+    steinhart += 1.0f / (NOMINAL_TEMPERATURE + 273.15f);
+    steinhart = 1.0f / steinhart;
+    steinhart -= 273.15f;
+
+    tempFilter_.addSample(steinhart);
+
+    return tempFilter_.getAverage();
 }
 
 bool SensorManager::checkSensorHealth()
@@ -50,10 +73,35 @@ bool SensorManager::checkSensorHealth()
     return true;
 }
 
-void SensorManager::update() {
-  // TODO: implement — poll analog/digital inputs on their own intervals,
-  // update filters/debouncers, compute edge-triggered events, and write
-  // the results into snapshot_ exactly once this cycle
+void SensorManager::update()
+{
+    armButton_.update();
+    doorbellButton_.update();
+
+    snapshot_.temperatureC = readTemperatureC();
+
+    snapshot_.dark = readDarkState();
+
+    snapshot_.motionDetected = readMotionState();
+
+    snapshot_.doorbellPressed = doorbellButton_.justPressed();
+
+    snapshot_.securityButtonPressed = armButton_.justPressed();
+
+    if (!thermistorHealthy_)
+        snapshot_.thermistorFault = ErrorCode::E01_THERMISTOR_FAULT;
+    else
+        snapshot_.thermistorFault = ErrorCode::NONE;
+
+    if (!ldrHealthy_)
+        snapshot_.ldrFault = ErrorCode::E05_LDR_FAULT;
+    else
+        snapshot_.ldrFault = ErrorCode::NONE;
+
+    if (!irHealthy_)
+        snapshot_.irFault = ErrorCode::E02_IR_FAULT;
+    else
+        snapshot_.irFault = ErrorCode::NONE;
 }
 
 const SensorSnapshot& SensorManager::getSnapshot() const {
