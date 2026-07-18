@@ -30,7 +30,7 @@ bool SensorManager::readDarkState()
 
 bool SensorManager::readMotionState()
 {
-    return digitalRead(Config::PIN_IR_MOTION) == HIGH;
+    return digitalRead(Config::PIN_IR_MOTION) == LOW;
 }
 
 float SensorManager::readTemperatureC()
@@ -80,19 +80,28 @@ void SensorManager::update()
 
     snapshot_.temperatureC = readTemperatureC();
 
-    Serial.print("ADC: ");
-    Serial.print(analogRead(Config::PIN_THERMISTOR));
-
-    Serial.print("  Temp: ");
-    Serial.println(snapshot_.temperatureC);
-
     snapshot_.dark = readDarkState();
 
     snapshot_.motionDetected = readMotionState();
 
+    if (snapshot_.motionDetected)
+{
+    Serial.println("Motion Detected");
+}
+
     snapshot_.doorbellPressed = doorbellButton_.justPressed();
 
+    if (snapshot_.doorbellPressed)
+{
+    Serial.println("Door Button Pressed");
+}
+
     snapshot_.securityButtonPressed = armButton_.justPressed();
+
+if (snapshot_.securityButtonPressed)
+{
+    Serial.println("Security Button Pressed");
+}
 
     if (!thermistorHealthy_)
         snapshot_.thermistorFault = ErrorCode::E01_THERMISTOR_FAULT;
@@ -108,6 +117,28 @@ void SensorManager::update()
         snapshot_.irFault = ErrorCode::E02_IR_FAULT;
     else
         snapshot_.irFault = ErrorCode::NONE;
+
+    static unsigned long lastDebug = 0;
+
+if (millis() - lastDebug >= 1000)
+{
+    lastDebug = millis();
+
+    Serial.print("ADC: ");
+    Serial.print(analogRead(Config::PIN_THERMISTOR));
+
+    Serial.print("  Temp: ");
+    Serial.print(snapshot_.temperatureC);
+
+    Serial.print("  Door:");
+    Serial.print(snapshot_.doorbellPressed);
+
+    Serial.print("  Security:");
+    Serial.print(snapshot_.securityButtonPressed);
+
+    Serial.print("  Motion:");
+    Serial.println(snapshot_.motionDetected);
+}
 }
 
 const SensorSnapshot& SensorManager::getSnapshot() const {

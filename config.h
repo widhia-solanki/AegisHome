@@ -38,7 +38,7 @@ constexpr uint8_t PIN_LED_INDICATOR   = D8;  // boot pin — merged status+welco
 // ---------------------------------------------------------------------
 // Thresholds & hysteresis
 // ---------------------------------------------------------------------
-constexpr float TEMP_THRESHOLD_C        = 30.0f; // fan LED trigger point
+constexpr float TEMP_THRESHOLD_C        = 35.0f; // fan LED trigger point
 constexpr float TEMP_HYSTERESIS_C       = 1.5f;  // avoids flicker at boundary
 constexpr uint16_t SERVO_ANGLE_CLOSED   = 0;
 constexpr uint16_t SERVO_ANGLE_OPEN     = 90;
