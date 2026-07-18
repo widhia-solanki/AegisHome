@@ -49,13 +49,19 @@ void Debouncer::update()
         {
             lastStableState_ = lastRawState_;
 
-            if (lastStableState_)
+            if (usePullup_)
             {
-                justPressedFlag_ = true;
+                if (!lastStableState_)
+                    justPressedFlag_ = true;
+                else
+                    justReleasedFlag_ = true;
             }
             else
             {
-                justReleasedFlag_ = true;
+                if (lastStableState_)
+                    justPressedFlag_ = true;
+                else
+                    justReleasedFlag_ = true;
             }
         }
     }

@@ -80,6 +80,12 @@ void SensorManager::update()
 
     snapshot_.temperatureC = readTemperatureC();
 
+    Serial.print("ADC: ");
+    Serial.print(analogRead(Config::PIN_THERMISTOR));
+
+    Serial.print("  Temp: ");
+    Serial.println(snapshot_.temperatureC);
+
     snapshot_.dark = readDarkState();
 
     snapshot_.motionDetected = readMotionState();

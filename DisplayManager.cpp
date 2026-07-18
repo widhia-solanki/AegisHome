@@ -96,9 +96,6 @@ void DisplayManager::update(const SystemStatus& status)
     display_.print("Door: ");
     display_.println(status.doorOpen ? "OPEN" : "CLOSED");
 
-    display_.print("Door: ");
-    display_.println(status.doorOpen ? "OPEN" : "CLOSED");
-
     display_.display();
 }
 
