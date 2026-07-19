@@ -1,6 +1,4 @@
 #include "TemperatureController.h"
-#include "config.h"
-#include <Arduino.h>
 
 void TemperatureController::begin()
 {
@@ -16,7 +14,6 @@ void TemperatureController::update(const SensorSnapshot& snapshot)
     if (snapshot.thermistorFault != ErrorCode::NONE)
     {
         fanActive_ = false;
-        digitalWrite(Config::PIN_FAN, LOW);
         return;
     }
 
@@ -35,9 +32,6 @@ void TemperatureController::update(const SensorSnapshot& snapshot)
     {
         fanActive_ = false;
     }
-
-    digitalWrite(Config::PIN_FAN,
-                 fanActive_ ? HIGH : LOW);
 }
 
 bool TemperatureController::isFanActive() const

@@ -34,8 +34,7 @@ constexpr uint8_t PIN_IR_MOTION       = D5;  // polarity validated
 constexpr uint8_t PIN_BUZZER          = D6;  // plain GPIO, no boot role
 constexpr uint8_t PIN_BUTTON_SECURITY = D7;  // INPUT_PULLUP validated
 constexpr uint8_t PIN_LED_INDICATOR   = D8;  // boot pin — merged status+welcome+alarm LED, LOW-at-boot safe
-constexpr uint8_t PIN_LIGHT_LED = 1;   // TX (GPIO1)
-constexpr uint8_t PIN_FAN = 3;         // RX (GPIO3)
+
 // ---------------------------------------------------------------------
 // Thresholds & hysteresis
 // ---------------------------------------------------------------------

@@ -1,6 +1,4 @@
 #include "LightingController.h"
-#include "config.h"
-#include <Arduino.h>
 
 void LightingController::begin()
 {
@@ -10,17 +8,15 @@ void LightingController::begin()
 void LightingController::update(const SensorSnapshot& snapshot)
 {
     // Fail-safe:
+    // If the LDR has failed, keep the light ON.
     if (snapshot.ldrFault != ErrorCode::NONE)
     {
         lightingOn_ = true;
-    }
-    else
-    {
-        lightingOn_ = snapshot.dark;
+        return;
     }
 
-    digitalWrite(Config::PIN_LIGHT_LED,
-                 lightingOn_ ? HIGH : LOW);
+    // Otherwise follow the LDR state.
+    lightingOn_ = snapshot.dark;
 }
 
 bool LightingController::isLightingOn() const

@@ -50,7 +50,7 @@ void setup()
 {
     LOGGER_BEGIN();
 
-    // LOG_INFO("BOOT", "AegisHome starting");
+    LOG_INFO("BOOT", "AegisHome starting");
 
     displayManager.begin();
     sensors.begin();
@@ -60,12 +60,6 @@ void setup()
     doorController.begin();
     securityManager.begin();
     alarmManager.begin();
-
-    pinMode(Config::PIN_LIGHT_LED, OUTPUT);
-    pinMode(Config::PIN_FAN, OUTPUT);
-
-    digitalWrite(Config::PIN_LIGHT_LED, LOW);
-    digitalWrite(Config::PIN_FAN, LOW);
 
     displayManager.renderBootStep("OLED", displayManager.getOledFault() == ErrorCode::NONE);
     delay(Config::BOOT_DIAGNOSTIC_STEP_MS);
@@ -86,9 +80,7 @@ void setup()
 
     stateManager.requestTransition(SystemState::NORMAL);
 
-    // LOG_INFO("BOOT", "Initialization complete");
-
-    
+    LOG_INFO("BOOT", "Initialization complete");
 }
 
 void loop()
