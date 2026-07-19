@@ -19,6 +19,7 @@ public:
 private:
     bool fanActive_;
 
+    // Reserved for future overheat buzzer timing (v1.1)
     Timer buzzerTimer_{Config::OVERHEAT_BUZZ_DURATION_MS};
 };
 

@@ -14,7 +14,7 @@
 struct SensorSnapshot {
   float temperatureC        = 0.0f;
   bool  dark                = false;
-  bool  motionDetected       = false; // edge-triggered, true only on the cycle it fires
+  bool  motionDetected       = false; //  true while the IR sensor output is active
   bool  doorbellPressed      = false; // edge-triggered
   bool  securityButtonPressed = false; // edge-triggered
 

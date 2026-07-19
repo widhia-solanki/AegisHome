@@ -25,7 +25,7 @@ private:
 
   uint32_t lastChangeMs_;
 
-  static constexpr uint32_t debounceDelayMs = 40;
+  // Debounce interval comes from config.h
 };
 
 // Simple moving-average filter for noisy analog readings.

@@ -1,4 +1,5 @@
 #include "Utilities.h"
+#include "config.h"
 
 // ---------------------------------------------------------------------
 // Debouncer
@@ -43,7 +44,7 @@ void Debouncer::update()
         lastChangeMs_ = millis();
     }
 
-    if ((millis() - lastChangeMs_) >= debounceDelayMs)
+    if ((millis() - lastChangeMs_) >= Config::DEBOUNCE_INTERVAL_MS)
     {
         if (lastStableState_ != lastRawState_)
         {

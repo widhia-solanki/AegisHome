@@ -1,4 +1,5 @@
 #include "SensorManager.h"
+#include "Logger.h"
 #include <math.h>
 
 void SensorManager::begin()
@@ -86,21 +87,21 @@ void SensorManager::update()
 
     if (snapshot_.motionDetected)
 {
-    Serial.println("Motion Detected");
+    LOG_INFO("IR", "Motion detected");
 }
 
     snapshot_.doorbellPressed = doorbellButton_.justPressed();
 
     if (snapshot_.doorbellPressed)
 {
-    Serial.println("Door Button Pressed");
+    LOG_INFO("DOOR", "Doorbell pressed");
 }
 
     snapshot_.securityButtonPressed = armButton_.justPressed();
 
 if (snapshot_.securityButtonPressed)
 {
-    Serial.println("Security Button Pressed");
+    LOG_INFO("SECURITY", "Security button pressed");
 }
 
     if (!thermistorHealthy_)
